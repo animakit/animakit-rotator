@@ -55,7 +55,7 @@ export class AnimakitRotator extends React.Component {
   componentDidMount() {
     this.winResize();
     this.repaint(this.props);
-    window.addEventListener('resize', this.winResizeListener, false);
+    if (window) window.addEventListener('resize', this.winResizeListener, false);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -79,12 +79,12 @@ export class AnimakitRotator extends React.Component {
   componentWillUnmount() {
     this.cancelResizeChecker();
     this.cancelAnimationReset();
-    window.removeEventListener('resize', this.winResizeListener, false);
+    if (window) window.removeEventListener('resize', this.winResizeListener, false);
   }
 
   winResize() {
     this.setState({
-      winHeight: window.innerHeight
+      winHeight: window ? window.innerHeight : 800
     });
   }
 
