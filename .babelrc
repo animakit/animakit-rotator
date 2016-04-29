@@ -4,17 +4,7 @@
     "es2015",
     "stage-0"
   ],
-  "env": {
-    "test": {
-      "plugins": [
-        [
-          "babel-plugin-webpack-loaders",
-          {
-            "config": "./test.webpack.config.js",
-            "verbose": false
-          }
-        ]
-      ]
-    }
-  }
+  "plugins": [
+    "add-module-exports"
+  ]
 }

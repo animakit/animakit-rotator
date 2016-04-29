@@ -1,13 +1,14 @@
 import React           from 'react';
 import { findDOMNode } from 'react-dom';
 
-import styles          from './AnimakitRotator.css';
+import styles          from './styles.js';
+import useSheet        from 'react-jss';
 
 import { isPropertySupported, isEqual } from 'animakit-core';
 
 const MAX_COUNT = 6;
 
-export class AnimakitRotator extends React.Component {
+class AnimakitRotator extends React.Component {
   static propTypes = {
     children:   React.PropTypes.any,
     axis:       React.PropTypes.string,
@@ -392,26 +393,30 @@ export class AnimakitRotator extends React.Component {
   renderShadow(num) {
     if (!this.is3DSupported) return null;
 
+    const { classes } = this.props.sheet;
+
     return (
       <div
-        className = { styles.sideShadow }
+        className = { classes.sideShadow }
         style     = { this.getShadowStyles(num) }
       />
     );
   }
 
   render() {
+    const { classes } = this.props.sheet;
+
     return (
       <div
-        className = { styles[this.is3DSupported ? 'root--3D' : 'root'] }
+        className = { classes.root }
         style     = { this.getSceneStyles() }
       >
         <div
-          className = { styles.container }
+          className = { classes.container }
           style     = { this.getContainerStyles() }
         >
           <div
-            className = { styles.figure }
+            className = { classes.figure }
             style     = { this.getFigureStyles() }
           >
             { React.Children.map(this.props.children, (child, num) => {
@@ -419,11 +424,11 @@ export class AnimakitRotator extends React.Component {
 
               return (
                 <div
-                  className = { styles.side }
+                  className = { classes.side }
                   style     = { this.getSideStyles(num) }
                 >
                   <div
-                    className = { styles.sideWrapper }
+                    className = { classes.sideWrapper }
                   >
                     { this.renderChild(child, num) }
                     { !this.props.background && this.renderShadow(num) }
@@ -438,3 +443,6 @@ export class AnimakitRotator extends React.Component {
     );
   }
 }
+
+export default useSheet(AnimakitRotator, styles);
+export { AnimakitRotator as PureAnimakitRotator };

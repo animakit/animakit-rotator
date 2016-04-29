@@ -4,10 +4,6 @@ const distPath          = path.join(__dirname, 'dist');
 
 const webpack           = require('webpack');
 
-const autoreset         = require('postcss-autoreset');
-const autoprefixer      = require('autoprefixer');
-
-
 module.exports = {
   devtool: 'source-map',
 
@@ -51,16 +47,7 @@ module.exports = {
         test:    /\.jsx?/,
         loader:  'babel',
         include: srcPath
-      },
-      {
-        test:   /\.css/,
-        loader: 'style!css?modules&importLoaders=1&localIdentName=[name]-[local]--[hash:base64:5]!postcss'
       }
     ]
-  },
-
-  postcss: [
-    autoreset(),
-    autoprefixer()
-  ]
+  }
 };

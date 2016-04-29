@@ -1,5 +1,4 @@
 require('babel-register')();
-// require('ignore-styles');
 
 var jsdom = require('jsdom').jsdom;
 
