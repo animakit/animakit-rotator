@@ -1,9 +1,7 @@
-import React           from 'react';
-import { findDOMNode } from 'react-dom';
-
-import styles          from './styles.js';
-import useSheet        from 'react-jss';
-
+import React                            from 'react';
+import { findDOMNode }                  from 'react-dom';
+import styles                           from './styles.js';
+import useSheet                         from 'react-jss';
 import { isPropertySupported, isEqual } from 'animakit-core';
 
 const MAX_COUNT = 6;
@@ -15,6 +13,7 @@ class AnimakitRotator extends React.Component {
     side:       React.PropTypes.any,
     duration:   React.PropTypes.number,
     easing:     React.PropTypes.string,
+    shadow:     React.PropTypes.bool,
     background: React.PropTypes.string
   };
 
@@ -22,7 +21,8 @@ class AnimakitRotator extends React.Component {
     axis:       'X',
     side:       0,
     duration:   1000,
-    easing:     'cubic-bezier(.165,.84,.44,1)', // easeOutQuart,
+    easing:     'cubic-bezier(.165,.84,.44,1)',
+    shadow:     false,
     background: null
   };
 
@@ -66,7 +66,10 @@ class AnimakitRotator extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     const stateChanged = !isEqual(this.state, nextState);
 
-    return stateChanged || nextProps.background !== this.props.background;
+    const propsChanged = nextProps.background !== this.props.background ||
+                         nextProps.shadow !== this.props.shadow;
+
+    return stateChanged || propsChanged;
   }
 
   componentWillUpdate() {
@@ -391,6 +394,7 @@ class AnimakitRotator extends React.Component {
   }
 
   renderShadow(num) {
+    if (!this.props.shadow) return null;
     if (!this.is3DSupported) return null;
 
     const { classes } = this.props.sheet;

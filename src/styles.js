@@ -1,6 +1,7 @@
 export default {
   root: {
     all: 'initial',
+    font: 'inherit',
     position: 'relative',
     display: 'block'
   },
