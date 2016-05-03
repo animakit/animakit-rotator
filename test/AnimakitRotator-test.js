@@ -1,7 +1,7 @@
 import React                                      from 'react';
 import { expect }                                 from 'chai';
 import { shallow, render }                        from 'enzyme';
-import { PureAnimakitRotator as AnimakitRotator } from '../src/AnimakitRotator';
+import { PureAnimakitRotator as AnimakitRotator } from '../lib/AnimakitRotator.js';
 
 const classes = {
   root:        'root',

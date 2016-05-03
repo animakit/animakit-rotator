@@ -1,6 +1,6 @@
 import React                            from 'react';
 import { findDOMNode }                  from 'react-dom';
-import styles                           from './styles.js';
+import styles                           from './styles';
 import useSheet                         from 'react-jss';
 import { isPropertySupported, isEqual } from 'animakit-core';
 
