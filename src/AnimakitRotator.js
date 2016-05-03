@@ -9,6 +9,7 @@ const MAX_COUNT = 6;
 class AnimakitRotator extends React.Component {
   static propTypes = {
     children:   React.PropTypes.any,
+    sheet:      React.PropTypes.any,
     axis:       React.PropTypes.string,
     side:       React.PropTypes.any,
     duration:   React.PropTypes.number,
@@ -64,9 +65,10 @@ class AnimakitRotator extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const stateChanged = !isEqual(this.state, nextState);
+    const stateChanged = !isEqual(nextState, this.state);
 
-    const propsChanged = nextProps.background !== this.props.background ||
+    const propsChanged = !isEqual(nextProps.children, this.props.children) ||
+                         nextProps.background !== this.props.background ||
                          nextProps.shadow !== this.props.shadow;
 
     return stateChanged || propsChanged;
