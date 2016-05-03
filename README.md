@@ -3,47 +3,13 @@
 React component for three-dimensional rotation of content blocks.
 Supports up to 6 blocks, different sizes and X/Y axis.
 
+## Usage
+
 ```javascript
-class SubmitButton extends React.Component {
-  state = {
-    side: 'button'
-  };
-
-  listeners = {
-    onClick:  this.onClick.bind(this),
-    onSubmit: this.onSubmit.bind(this)
-  };
-
-  onSubmit() {
-    this.setState({ side: 'button' });
-  }
-
-  onClick() {
-    this.setState({ side: 'loader' });
-
-    submit(this.listeners.onSubmit);
-  }
-
-  render() {
-    return (
-      <AnimakitRotator
-        side = { this.state.side }
-      >
-        <button
-          key       = "button"
-          className = { styles.button }
-          onClick   = { this.listeners.onClick }
-        >
-          Submit
-        </button>
-        <div
-          key       = "loader"
-          className = { styles.loader }
-        />
-      </AnimakitRotator>
-    );
-  }
-}
+<AnimakitRotator side = { this.state.loading }>
+  <Button />
+  <Loader />
+</AnimakitRotator>
 ```
 
 ## [Demo](http://askd.github.io/animakit/#/rotator)
@@ -52,17 +18,6 @@ class SubmitButton extends React.Component {
 
 ```
 npm install animakit-rotator
-```
-
-## Usage
-
-```javascript
-<AnimakitRotator side="one">
-  <div key="one">Side One</div>
-  <div key="two">Side Two</div>
-  ...
-  <div key="six">Up to Six Sides</div>
-</AnimakitRotator>
 ```
 
 ## Properties
