@@ -1,6 +1,6 @@
 {
   "name": "animakit-rotator",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "AnimakitRotator - React component for three-dimensional rotation of content blocks",
   "main": "index.js",
   "files": [
@@ -43,9 +43,7 @@
   },
   "dependencies": {
     "animakit-core": "^1.0.2",
-    "jss": "3.9.1",
     "react": "^15.0.1",
-    "react-dom": "^15.0.1",
-    "react-jss": "^2.0.6"
+    "react-dom": "^15.0.1"
   }
 }

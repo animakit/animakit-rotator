@@ -1,30 +1,23 @@
-import React                                      from 'react';
-import { expect }                                 from 'chai';
-import { shallow, render }                        from 'enzyme';
-import { PureAnimakitRotator as AnimakitRotator } from '../lib/AnimakitRotator.js';
-
-const classes = {
-  root:        'root',
-  container:   'container',
-  figure:      'figure',
-  side:        'side',
-  sideShadow:  'sideShadow',
-  sideWrapper: 'sideWrapper'
-};
+import React               from 'react';
+import { expect }          from 'chai';
+import { shallow }         from 'enzyme';
+import AnimakitRotator     from '../lib/AnimakitRotator.js';
 
 describe('AnimakitRotator', () => {
-  it('shallow', () => {
-    const wrapper = shallow(<AnimakitRotator sheet={{ classes }} />);
-    expect(wrapper.is('div')).to.equal(true);
+  it('shallow render', () => {
+    const root = shallow(<AnimakitRotator />);
+    expect(root.is('div')).to.equal(true);
   });
 
-  it('render', () => {
-    const wrapper = render(<AnimakitRotator sheet={{ classes }} />);
-    expect(wrapper.find('.container')).to.have.length(1);
+  it('has container', () => {
+    const root = shallow(<AnimakitRotator />);
+    expect(root.children()).to.have.length(1);
   });
 
-  it('children', () => {
-    const wrapper = render(<AnimakitRotator sheet={{ classes }}><div>1</div><div>2</div><div>3</div></AnimakitRotator>);
-    expect(wrapper.find('.side')).to.have.length(3);
+  it('has children', () => {
+    const root = shallow(<AnimakitRotator><div>1</div><div>2</div><div>3</div></AnimakitRotator>);
+    const container = root.childAt(0);
+    const figure = container.childAt(0);
+    expect(figure.children()).to.have.length(3);
   });
 });

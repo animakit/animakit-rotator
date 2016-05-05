@@ -1,12 +1,11 @@
 import React                            from 'react';
 import { findDOMNode }                  from 'react-dom';
 import styles                           from './styles';
-import useSheet                         from 'react-jss';
 import { isPropertySupported, isEqual } from 'animakit-core';
 
 const MAX_COUNT = 6;
 
-class AnimakitRotator extends React.Component {
+export default class AnimakitRotator extends React.Component {
   static propTypes = {
     children:   React.PropTypes.any,
     sheet:      React.PropTypes.any,
@@ -105,10 +104,12 @@ class AnimakitRotator extends React.Component {
   }
 
   startResizeChecker() {
+    if (typeof requestAnimationFrame === 'undefined') return;
     this.resizeCheckerRAF = requestAnimationFrame(this.checkResize.bind(this));
   }
 
   cancelResizeChecker() {
+    if (typeof requestAnimationFrame === 'undefined') return;
     if (this.resizeCheckerRAF) cancelAnimationFrame(this.resizeCheckerRAF);
   }
 
@@ -295,9 +296,9 @@ class AnimakitRotator extends React.Component {
 
     const { width, height, perspective } = this.state;
 
-    if (!this.is3DSupported) return { width, height };
+    if (!this.is3DSupported) return { ...styles.scene, width, height };
 
-    return { width, height, perspective };
+    return { ...styles.scene, width, height, perspective };
   }
 
   getContainerStyles() {
@@ -306,7 +307,7 @@ class AnimakitRotator extends React.Component {
 
     const transform = `translateZ(${ this.state.sideOffset * -1 }px)`;
 
-    return { transform };
+    return { ...styles.container, transform };
   }
 
   getFigureStyles() {
@@ -316,11 +317,11 @@ class AnimakitRotator extends React.Component {
     const angle     = this.state.figureAngle + this.state.turnover * 360;
     const transform = `rotate${ this.state.axis }(${ angle }deg)`;
 
-    if (!this.state.animation) return { transform };
+    if (!this.state.animation) return { ...styles.figure, transform };
 
     const transition = `transform ${ this.props.duration }ms ${ this.props.easing }`;
 
-    return { transform, transition };
+    return { ...styles.figure, transform, transition };
   }
 
   getSideStyles(num) {
@@ -330,26 +331,26 @@ class AnimakitRotator extends React.Component {
     const transform  = `rotate${ this.state.axis }(${ this.state.sidesAngles[num] }deg) `
                      + `translateZ(${ this.state.sideOffset }px)`;
 
-    if (this.is3DSupported) return { transform, background };
+    if (this.is3DSupported) return { ...styles.side, transform, background };
 
     const opacity = num === this.state.currentSide ? 1 : 0;
     const zIndex  = num === this.state.currentSide ? 2 : 1;
 
-    if (!this.state.animation) return { opacity, zIndex, background };
+    if (!this.state.animation) return { ...styles.side, opacity, zIndex, background };
 
     const transition = `opacity ${ this.props.duration }ms ${ this.props.easing }`;
 
-    return { opacity, zIndex, transition, background };
+    return { ...styles.side, opacity, zIndex, transition, background };
   }
 
   getShadowStyles(num) {
     const opacity = num === this.state.currentSide ? 0 : 2 / this.state.sidesCount;
 
-    if (!this.state.animation) return { opacity };
+    if (!this.state.animation) return { ...styles.sideShadow, opacity };
 
     const transition = `opacity ${ this.props.duration }ms ${ this.props.easing }`;
 
-    return { opacity, transition };
+    return { ...styles.sideShadow, opacity, transition };
   }
 
   getNeighborSides(side) {
@@ -399,43 +400,22 @@ class AnimakitRotator extends React.Component {
     if (!this.props.shadow) return null;
     if (!this.is3DSupported) return null;
 
-    const { classes } = this.props.sheet;
-
     return (
-      <div
-        className = { classes.sideShadow }
-        style     = { this.getShadowStyles(num) }
-      />
+      <div style = { this.getShadowStyles(num) } />
     );
   }
 
   render() {
-    const { classes } = this.props.sheet;
-
     return (
-      <div
-        className = { classes.root }
-        style     = { this.getSceneStyles() }
-      >
-        <div
-          className = { classes.container }
-          style     = { this.getContainerStyles() }
-        >
-          <div
-            className = { classes.figure }
-            style     = { this.getFigureStyles() }
-          >
+      <div style = { this.getSceneStyles() }>
+        <div style = { this.getContainerStyles() }>
+          <div style = { this.getFigureStyles() }>
             { React.Children.map(this.props.children, (child, num) => {
               if (num >= MAX_COUNT) return null;
 
               return (
-                <div
-                  className = { classes.side }
-                  style     = { this.getSideStyles(num) }
-                >
-                  <div
-                    className = { classes.sideWrapper }
-                  >
+                <div style = { this.getSideStyles(num) }>
+                  <div style = { styles.sideWrapper }>
                     { this.renderChild(child, num) }
                     { !this.props.background && this.renderShadow(num) }
                   </div>
@@ -449,6 +429,3 @@ class AnimakitRotator extends React.Component {
     );
   }
 }
-
-export default useSheet(AnimakitRotator, styles);
-export { AnimakitRotator as PureAnimakitRotator };

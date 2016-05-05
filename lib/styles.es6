@@ -1,7 +1,5 @@
 export default {
-  root: {
-    all: 'initial',
-    font: 'inherit',
+  scene: {
     position: 'relative',
     display: 'block'
   },
@@ -12,8 +10,8 @@ export default {
     display: 'block',
     width: '100%',
     height: '100%',
-    '-webkit-transform-style': 'preserve-3d',
-    'transform-style': 'preserve-3d'
+    WebkitTransformStyle: 'preserve-3d',
+    transformStyle: 'preserve-3d'
   },
   figure: {
     position: 'absolute',
@@ -22,8 +20,8 @@ export default {
     display: 'block',
     width: '100%',
     height: '100%',
-    '-webkit-transform-style': 'preserve-3d',
-    'transform-style': 'preserve-3d'
+    WebkitTransformStyle: 'preserve-3d',
+    transformStyle: 'preserve-3d'
   },
   side: {
     position: 'absolute',
@@ -32,8 +30,8 @@ export default {
     display: 'block',
     width: '100%',
     height: '100%',
-    '-webkit-backface-visibility': 'hidden',
-    'backface-visibility': 'hidden'
+    WebkitBackfaceVisibility: 'hidden',
+    backfaceVisibility: 'hidden'
   },
   sideShadow: {
     position: 'absolute',
@@ -43,15 +41,15 @@ export default {
     width: '100%',
     height: '100%',
     background: '#000',
-    '-webkit-backface-visibility': 'hidden',
-    'backface-visibility': 'hidden',
-    'pointer-events': 'none'
+    WebkitBackfaceVisibility: 'hidden',
+    backfaceVisibility: 'hidden',
+    pointerEvents: 'none'
   },
   sideWrapper: {
     position: 'absolute',
     top: '50%',
     left: '50%',
-    '-webkit-transform': 'translate(-50%, -50%)',
+    WebkitTransform: 'translate(-50%, -50%)',
     transform: 'translate(-50%, -50%)'
   }
 }
