@@ -31,6 +31,9 @@ npm install animakit-rotator
 | duration | false | number | `1000` | Any integer number | Duration of rotation |
 | easing | false | string | `cubic-bezier(.165, .84, .44, 1)` | Any [easing function](http://easings.net/) | Easing function of rotation |
 
+## Limitations
+
+The appearance of the components may be affected due to the absolute positioning, so it is preferable to use fixed width or non-breakable spaces.
 
 ## Origin
 
