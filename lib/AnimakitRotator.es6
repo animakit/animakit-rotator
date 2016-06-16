@@ -43,10 +43,13 @@ export default class AnimakitRotator extends React.Component {
 
   animationResetTO  = null;
   resizeCheckerRAF  = null;
-  winResizeListener = this.winResize.bind(this);
-
   sidesDimensions   = [];
   is3DSupported     = false;
+
+  listeners = {
+    checkResize: this.checkResize.bind(this),
+    winResize:   this.winResize.bind(this)
+  };
 
   componentWillMount() {
     this.is3DSupported = isPropertySupported('perspective', '1px') &&
@@ -56,7 +59,7 @@ export default class AnimakitRotator extends React.Component {
   componentDidMount() {
     this.winResize();
     this.repaint(this.props);
-    if (window) window.addEventListener('resize', this.winResizeListener, false);
+    if (window) window.addEventListener('resize', this.listeners.winResize, false);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -84,7 +87,7 @@ export default class AnimakitRotator extends React.Component {
   componentWillUnmount() {
     this.cancelResizeChecker();
     this.cancelAnimationReset();
-    if (window) window.removeEventListener('resize', this.winResizeListener, false);
+    if (window) window.removeEventListener('resize', this.listeners.winResize, false);
   }
 
   winResize() {
@@ -105,7 +108,7 @@ export default class AnimakitRotator extends React.Component {
 
   startResizeChecker() {
     if (typeof requestAnimationFrame === 'undefined') return;
-    this.resizeCheckerRAF = requestAnimationFrame(this.checkResize.bind(this));
+    this.resizeCheckerRAF = requestAnimationFrame(this.listeners.checkResize);
   }
 
   cancelResizeChecker() {
