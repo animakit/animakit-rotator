@@ -1,6 +1,6 @@
 {
   "name": "animakit-rotator",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "AnimakitRotator - React component for the 3D rotation of the blocks",
   "main": "index.js",
   "files": [
@@ -27,6 +27,7 @@
     "type": "git",
     "url": "https://github.com/animakit/animakit-rotator"
   },
+  "homepage": "https://animakit.github.io",
   "devDependencies": {
     "babel-cli": "^6.11.4",
     "babel-plugin-add-module-exports": "^0.2.1",
@@ -42,7 +43,7 @@
     "rimraf": "^2.5.4"
   },
   "dependencies": {
-    "animakit-core": "^1.0.6",
+    "animakit-core": "^1.0.7",
     "react": "^15.3.0",
     "react-dom": "^15.3.0"
   }

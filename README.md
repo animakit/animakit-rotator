@@ -12,7 +12,7 @@ Supports up to 6 blocks, different sizes, and X/Y axis.
 </AnimakitRotator>
 ```
 
-## [Demo](http://askd.github.io/animakit/#/rotator)
+## [Demo](https://animakit.github.io/#/rotator)
 
 ## Installation
 
@@ -38,4 +38,4 @@ The appearance of the components may be affected due to the absolute positioning
 ## Origin
 
 AnimakitRotator is the part of Animakit.
-See http://askd.github.io/animakit for more details.
+See https://animakit.github.io for more details.
