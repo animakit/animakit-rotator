@@ -1,7 +1,6 @@
 import React                            from 'react';
-import { findDOMNode }                  from 'react-dom';
-import styles                           from './styles';
 import { isPropertySupported, isEqual } from 'animakit-core';
+import styles                           from './styles';
 
 const MAX_COUNT = 6;
 
@@ -14,7 +13,7 @@ export default class AnimakitRotator extends React.Component {
     duration:   React.PropTypes.number,
     easing:     React.PropTypes.string,
     shadow:     React.PropTypes.bool,
-    background: React.PropTypes.string
+    background: React.PropTypes.string,
   };
 
   static defaultProps = {
@@ -23,7 +22,7 @@ export default class AnimakitRotator extends React.Component {
     duration:   1000,
     easing:     'cubic-bezier(.165,.84,.44,1)',
     shadow:     false,
-    background: null
+    background: null,
   };
 
   state = {
@@ -38,27 +37,18 @@ export default class AnimakitRotator extends React.Component {
     sideOffset:  0,
     figureAngle: 0,
     sidesAngles: [],
-    turnover:    0
-  };
-
-  animationResetTO  = null;
-  resizeCheckerRAF  = null;
-  sidesDimensions   = [];
-  is3DSupported     = false;
-
-  listeners = {
-    checkResize: this.checkResize.bind(this),
-    winResize:   this.winResize.bind(this)
+    turnover:    0,
   };
 
   componentWillMount() {
-    this.is3DSupported = isPropertySupported('perspective', '1px') &&
-                         isPropertySupported('transform-style', 'preserve-3d');
+    this.init();
   }
 
   componentDidMount() {
     this.winResize();
+
     this.repaint(this.props);
+
     if (window) window.addEventListener('resize', this.listeners.winResize, false);
   }
 
@@ -90,10 +80,103 @@ export default class AnimakitRotator extends React.Component {
     if (window) window.removeEventListener('resize', this.listeners.winResize, false);
   }
 
-  winResize() {
-    this.setState({
-      winHeight: window ? window.innerHeight : 800
-    });
+  getSceneStyles() {
+    if (!this.state.width || !this.state.height) return null;
+
+    const { width, height, perspective } = this.state;
+
+    if (!this.is3DSupported) return { ...styles.scene, width, height };
+
+    return { ...styles.scene, width, height, perspective };
+  }
+
+  getContainerStyles() {
+    if (!this.is3DSupported) return null;
+    if (!this.state.width || !this.state.height) return null;
+
+    const transform = `translateZ(${this.state.sideOffset * -1}px)`;
+
+    return { ...styles.container, transform };
+  }
+
+  getFigureStyles() {
+    if (!this.is3DSupported) return null;
+    if (!this.state.width || !this.state.height) return null;
+
+    const angle     = this.state.figureAngle + (this.state.turnover * 360);
+    const transform = `rotate${this.state.axis}(${angle}deg)`;
+
+    if (!this.state.animation) return { ...styles.figure, transform };
+
+    const transition = `transform ${this.props.duration}ms ${this.props.easing}`;
+
+    return { ...styles.figure, transform, transition };
+  }
+
+  getSideStyles(num) {
+    if (!this.state.width || !this.state.height) return null;
+
+    const background = this.props.background || 'transparent';
+    const transform  = `rotate${this.state.axis}(${this.state.sidesAngles[num]}deg) `
+                     + `translateZ(${this.state.sideOffset}px)`;
+
+    if (this.is3DSupported) return { ...styles.side, transform, background };
+
+    const opacity = num === this.state.currentSide ? 1 : 0;
+    const zIndex  = num === this.state.currentSide ? 2 : 1;
+
+    if (!this.state.animation) return { ...styles.side, opacity, zIndex, background };
+
+    const transition = `opacity ${this.props.duration}ms ${this.props.easing}`;
+
+    return { ...styles.side, opacity, zIndex, transition, background };
+  }
+
+  getShadowStyles(num) {
+    const opacity = num === this.state.currentSide ? 0 : 2 / this.state.sidesCount;
+
+    if (!this.state.animation) return { ...styles.sideShadow, opacity };
+
+    const transition = `opacity ${this.props.duration}ms ${this.props.easing}`;
+
+    return { ...styles.sideShadow, opacity, transition };
+  }
+
+  getNeighborSides(side) {
+    const sidesCount = this.state.sidesCount;
+
+    let neighbor1 = side - 1;
+    if (neighbor1 === -1) neighbor1 = sidesCount - 1;
+
+    let neighbor2 = side + 1;
+    if (neighbor2 === sidesCount) neighbor2 = 0;
+
+    return [neighbor1, neighbor2];
+  }
+
+  getChildVisibility(num) {
+    if (num >= MAX_COUNT) return false;
+
+    if (!this.state.width || !this.state.height) return true;
+
+    const currentSide = this.state.currentSide;
+    const prevSide    = this.state.prevSide;
+    const sidesCount  = this.state.sidesCount;
+    const animation   = this.state.animation;
+
+    if (num === currentSide) return true;
+
+    if (animation && (sidesCount > 4 || Math.abs(currentSide - num) > 1)) {
+      if (num === prevSide) return true;
+
+      const [neighbor1, neighbor2] = this.getNeighborSides(prevSide);
+
+      if (num === neighbor1 || num === neighbor2) return true;
+    }
+
+    const [neighbor1, neighbor2] = this.getNeighborSides(currentSide);
+
+    return (num === neighbor1 || num === neighbor2) && (animation || sidesCount > 4);
   }
 
   getSideNum(sideKey) {
@@ -104,6 +187,28 @@ export default class AnimakitRotator extends React.Component {
     });
 
     return sideNum;
+  }
+
+  init() {
+    this.sidesNodes      = [];
+    this.sidesDimensions = [];
+
+    this.animationResetTO = null;
+    this.resizeCheckerRAF = null;
+
+    this.listeners = {
+      checkResize: this.checkResize.bind(this),
+      winResize:   this.winResize.bind(this),
+    };
+
+    this.is3DSupported = isPropertySupported('perspective', '1px') &&
+                         isPropertySupported('transform-style', 'preserve-3d');
+  }
+
+  winResize() {
+    this.setState({
+      winHeight: window ? window.innerHeight : 800,
+    });
   }
 
   startResizeChecker() {
@@ -120,7 +225,7 @@ export default class AnimakitRotator extends React.Component {
     this.animationResetTO = setTimeout(() => {
       this.setState({
         turnover:  0,
-        animation: false
+        animation: false,
       });
     }, this.props.duration);
   }
@@ -134,8 +239,6 @@ export default class AnimakitRotator extends React.Component {
     let maxHeight = 0;
 
     React.Children.map(this.props.children, (child, num) => {
-      const node = findDOMNode(this.refs[`side${ num }`]);
-
       let width  = 0;
       let height = 0;
 
@@ -144,9 +247,13 @@ export default class AnimakitRotator extends React.Component {
         height = this.sidesDimensions[num].height;
       }
 
-      if (node) {
-        width  = node.offsetWidth;
-        height = node.offsetHeight;
+      if (this.getChildVisibility(num)) {
+        const node = this.sidesNodes[num];
+
+        if (node) {
+          width  = node.offsetWidth;
+          height = node.offsetHeight;
+        }
 
         this.sidesDimensions[num] = { width, height };
       }
@@ -167,7 +274,7 @@ export default class AnimakitRotator extends React.Component {
   }
 
   calcRotateAngle(num, sidesCount) {
-    return 360 / sidesCount * num;
+    return (360 / sidesCount) * num;
   }
 
   calcSideOffset(size, sidesCount) {
@@ -179,7 +286,7 @@ export default class AnimakitRotator extends React.Component {
       3: 0.289,
       4: 0.5,
       5: 0.688,
-      6: 0.866
+      6: 0.866,
     };
 
     return size * circleRadius[count];
@@ -294,111 +401,6 @@ export default class AnimakitRotator extends React.Component {
     if (state.animation) this.startAnimationReset();
   }
 
-  getSceneStyles() {
-    if (!this.state.width || !this.state.height) return null;
-
-    const { width, height, perspective } = this.state;
-
-    if (!this.is3DSupported) return { ...styles.scene, width, height };
-
-    return { ...styles.scene, width, height, perspective };
-  }
-
-  getContainerStyles() {
-    if (!this.is3DSupported) return null;
-    if (!this.state.width || !this.state.height) return null;
-
-    const transform = `translateZ(${ this.state.sideOffset * -1 }px)`;
-
-    return { ...styles.container, transform };
-  }
-
-  getFigureStyles() {
-    if (!this.is3DSupported) return null;
-    if (!this.state.width || !this.state.height) return null;
-
-    const angle     = this.state.figureAngle + this.state.turnover * 360;
-    const transform = `rotate${ this.state.axis }(${ angle }deg)`;
-
-    if (!this.state.animation) return { ...styles.figure, transform };
-
-    const transition = `transform ${ this.props.duration }ms ${ this.props.easing }`;
-
-    return { ...styles.figure, transform, transition };
-  }
-
-  getSideStyles(num) {
-    if (!this.state.width || !this.state.height) return null;
-
-    const background = this.props.background || 'transparent';
-    const transform  = `rotate${ this.state.axis }(${ this.state.sidesAngles[num] }deg) `
-                     + `translateZ(${ this.state.sideOffset }px)`;
-
-    if (this.is3DSupported) return { ...styles.side, transform, background };
-
-    const opacity = num === this.state.currentSide ? 1 : 0;
-    const zIndex  = num === this.state.currentSide ? 2 : 1;
-
-    if (!this.state.animation) return { ...styles.side, opacity, zIndex, background };
-
-    const transition = `opacity ${ this.props.duration }ms ${ this.props.easing }`;
-
-    return { ...styles.side, opacity, zIndex, transition, background };
-  }
-
-  getShadowStyles(num) {
-    const opacity = num === this.state.currentSide ? 0 : 2 / this.state.sidesCount;
-
-    if (!this.state.animation) return { ...styles.sideShadow, opacity };
-
-    const transition = `opacity ${ this.props.duration }ms ${ this.props.easing }`;
-
-    return { ...styles.sideShadow, opacity, transition };
-  }
-
-  getNeighborSides(side) {
-    const sidesCount = this.state.sidesCount;
-
-    let neighbor1 = side - 1;
-    if (neighbor1 === -1) neighbor1 = sidesCount - 1;
-
-    let neighbor2 = side + 1;
-    if (neighbor2 === sidesCount) neighbor2 = 0;
-
-    return [neighbor1, neighbor2];
-  }
-
-  getChildVisibility(num) {
-    if (num >= MAX_COUNT) return false;
-
-    if (!this.state.width || !this.state.height) return true;
-
-    const currentSide = this.state.currentSide;
-    const prevSide    = this.state.prevSide;
-    const sidesCount  = this.state.sidesCount;
-    const animation   = this.state.animation;
-
-    if (num === currentSide) return true;
-
-    if (animation && (sidesCount > 4 || Math.abs(currentSide - num) > 1)) {
-      if (num === prevSide) return true;
-
-      const [neighbor1, neighbor2] = this.getNeighborSides(prevSide);
-
-      if (num === neighbor1 || num === neighbor2) return true;
-    }
-
-    const [neighbor1, neighbor2] = this.getNeighborSides(currentSide);
-
-    return (num === neighbor1 || num === neighbor2) && (animation || sidesCount > 4);
-  }
-
-  renderChild(child, num) {
-    if (!this.getChildVisibility(num)) return null;
-
-    return React.cloneElement(child, { ref: `side${ num }` });
-  }
-
   renderShadow(num) {
     if (!this.props.shadow) return null;
     if (!this.is3DSupported) return null;
@@ -418,8 +420,8 @@ export default class AnimakitRotator extends React.Component {
 
               return (
                 <div style = { this.getSideStyles(num) }>
-                  <div style = { styles.sideWrapper }>
-                    { this.renderChild(child, num) }
+                  <div style = { styles.sideWrapper } ref = { (c) => { this.sidesNodes[num] = c; } }>
+                    { this.getChildVisibility(num) ? child : null }
                     { !this.props.background && this.renderShadow(num) }
                   </div>
                   { this.props.background && this.renderShadow(num) }
