@@ -1,7 +1,7 @@
-import React           from 'react';
-import test            from 'ava';
-import { shallow, mount }     from 'enzyme';
-import AnimakitRotator from '../lib/AnimakitRotator.js';
+import React              from 'react';
+import test               from 'ava';
+import { shallow, mount } from 'enzyme';
+import AnimakitRotator    from '../lib/AnimakitRotator.js';
 
 test('shallow', t => {
   const wrapper = shallow(<AnimakitRotator />);
