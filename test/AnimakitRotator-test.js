@@ -1,23 +1,28 @@
-import React               from 'react';
-import { expect }          from 'chai';
-import { shallow }         from 'enzyme';
-import AnimakitRotator     from '../lib/AnimakitRotator.js';
+import React           from 'react';
+import test            from 'ava';
+import { shallow, mount }     from 'enzyme';
+import AnimakitRotator from '../lib/AnimakitRotator.js';
 
-describe('AnimakitRotator', () => {
-  it('shallow render', () => {
-    const root = shallow(<AnimakitRotator />);
-    expect(root.is('div')).to.equal(true);
-  });
+test('shallow', t => {
+  const wrapper = shallow(<AnimakitRotator />);
+  t.is(wrapper.type(), 'div');
+});
 
-  it('has container', () => {
-    const root = shallow(<AnimakitRotator />);
-    expect(root.children()).to.have.length(1);
-  });
+test('mount', t => {
+  const wrapper = mount(<AnimakitRotator />);
+  t.is(wrapper.children().length, 1);
+});
 
-  it('has children', () => {
-    const root = shallow(<AnimakitRotator><div>1</div><div>2</div><div>3</div></AnimakitRotator>);
-    const container = root.childAt(0);
-    const figure = container.childAt(0);
-    expect(figure.children()).to.have.length(3);
-  });
+test('has container', t => {
+  const wrapper = shallow(<AnimakitRotator />);
+  t.is(wrapper.children().length, 1);
+});
+
+test('has children', t => {
+  const wrapper = shallow(
+    <AnimakitRotator><div>1</div><div>2</div><div>3</div></AnimakitRotator>
+  );
+  const container = wrapper.childAt(0);
+  const figure = container.childAt(0);
+  t.is(figure.children().length, 3);
 });
