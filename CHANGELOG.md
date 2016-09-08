@@ -8,3 +8,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## 1.0.11
 * Refactor refs
 * Upgrade animakit-core
+
+##2.0.0-beta
+* Use AnimakitBase component from animakit-core
