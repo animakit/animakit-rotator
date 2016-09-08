@@ -42,7 +42,7 @@
     "rimraf": "^2.5.4"
   },
   "dependencies": {
-    "animakit-core": "^1.1.0",
+    "animakit-core": "^2.0.0-beta",
     "react": "^15.3.1",
     "react-dom": "^15.3.1"
   },

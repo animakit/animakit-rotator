@@ -1,10 +1,11 @@
-import React                            from 'react';
-import { isPropertySupported, isEqual } from 'animakit-core';
-import styles                           from './styles';
+import React        from 'react';
+import AnimakitBase from 'animakit-core';
+
+import styles       from './styles';
 
 const MAX_COUNT = 6;
 
-export default class AnimakitRotator extends React.Component {
+export default class AnimakitRotator extends AnimakitBase {
   static propTypes = {
     children:   React.PropTypes.any,
     sheet:      React.PropTypes.any,
@@ -40,44 +41,14 @@ export default class AnimakitRotator extends React.Component {
     turnover:    0,
   };
 
-  componentWillMount() {
-    this.init();
-  }
+  init() {
+    this.sidesNodes      = [];
+    this.sidesDimensions = [];
 
-  componentDidMount() {
-    this.winResize();
+    this.is3DSupported = this.get3DSupport();
 
-    this.repaint(this.props);
-
-    if (window) window.addEventListener('resize', this.listeners.winResize, false);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.repaint(nextProps);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    const stateChanged = !isEqual(nextState, this.state);
-
-    const propsChanged = !isEqual(nextProps.children, this.props.children) ||
-                         nextProps.background !== this.props.background ||
-                         nextProps.shadow !== this.props.shadow;
-
-    return stateChanged || propsChanged;
-  }
-
-  componentWillUpdate() {
-    this.cancelResizeChecker();
-  }
-
-  componentDidUpdate() {
-    this.startResizeChecker();
-  }
-
-  componentWillUnmount() {
-    this.cancelResizeChecker();
-    this.cancelAnimationReset();
-    if (window) window.removeEventListener('resize', this.listeners.winResize, false);
+    this.changingProps = ['background', 'shadow'];
+    this.useWinResize = true;
   }
 
   getSceneStyles() {
@@ -187,51 +158,6 @@ export default class AnimakitRotator extends React.Component {
     });
 
     return sideNum;
-  }
-
-  init() {
-    this.sidesNodes      = [];
-    this.sidesDimensions = [];
-
-    this.animationResetTO = null;
-    this.resizeCheckerRAF = null;
-
-    this.listeners = {
-      checkResize: this.checkResize.bind(this),
-      winResize:   this.winResize.bind(this),
-    };
-
-    this.is3DSupported = isPropertySupported('perspective', '1px') &&
-                         isPropertySupported('transform-style', 'preserve-3d');
-  }
-
-  winResize() {
-    this.setState({
-      winHeight: window ? window.innerHeight : 800,
-    });
-  }
-
-  startResizeChecker() {
-    if (typeof requestAnimationFrame === 'undefined') return;
-    this.resizeCheckerRAF = requestAnimationFrame(this.listeners.checkResize);
-  }
-
-  cancelResizeChecker() {
-    if (typeof requestAnimationFrame === 'undefined') return;
-    if (this.resizeCheckerRAF) cancelAnimationFrame(this.resizeCheckerRAF);
-  }
-
-  startAnimationReset() {
-    this.animationResetTO = setTimeout(() => {
-      this.setState({
-        turnover:  0,
-        animation: false,
-      });
-    }, this.props.duration);
-  }
-
-  cancelAnimationReset() {
-    if (this.animationResetTO) clearTimeout(this.animationResetTO);
   }
 
   calcDimensions() {
@@ -349,9 +275,7 @@ export default class AnimakitRotator extends React.Component {
     return { currentSide, prevSide, figureAngle, turnover, animation };
   }
 
-  checkResize() {
-    this.cancelResizeChecker();
-
+  softRepaint() {
     const sidesCount = this.state.sidesCount;
 
     const [width, height] = this.calcDimensions();
@@ -362,8 +286,6 @@ export default class AnimakitRotator extends React.Component {
     const state = this.resetDimensionsState({ width, height, perspective, sideOffset });
 
     if (Object.keys(state).length) this.setState(state);
-
-    this.startResizeChecker();
   }
 
   repaint(nextProps) {
@@ -392,13 +314,7 @@ export default class AnimakitRotator extends React.Component {
       this.resetCurrentSideState({ currentSide, sidesCount, axisSign, figureAngle })
     );
 
-    if (!Object.keys(state).length) return;
-
-    if (state.animation) this.cancelAnimationReset();
-
-    this.setState(state);
-
-    if (state.animation) this.startAnimationReset();
+    this.applyState(state);
   }
 
   renderShadow(num) {
