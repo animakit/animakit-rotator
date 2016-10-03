@@ -1,6 +1,6 @@
 {
   "name": "animakit-rotator",
-  "version": "2.0.0-beta",
+  "version": "2.0.0",
   "description": "AnimakitRotator - React component for the 3D rotation of the blocks",
   "main": "index.js",
   "files": [
