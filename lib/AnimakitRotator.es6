@@ -6,40 +6,24 @@ import styles       from './styles';
 const MAX_COUNT = 6;
 
 export default class AnimakitRotator extends AnimakitBase {
-  static propTypes = {
-    children:   React.PropTypes.any,
-    sheet:      React.PropTypes.any,
-    axis:       React.PropTypes.string,
-    side:       React.PropTypes.any,
-    duration:   React.PropTypes.number,
-    easing:     React.PropTypes.string,
-    shadow:     React.PropTypes.bool,
-    background: React.PropTypes.string,
-  };
+  constructor(props) {
+    super(props);
 
-  static defaultProps = {
-    axis:       'X',
-    side:       0,
-    duration:   1000,
-    easing:     'cubic-bezier(.165,.84,.44,1)',
-    shadow:     false,
-    background: null,
-  };
-
-  state = {
-    animation:   false,
-    sidesCount:  0,
-    currentSide: 0,
-    prevSide:    0,
-    width:       0,
-    height:      0,
-    winHeight:   0,
-    perspective: 0,
-    sideOffset:  0,
-    figureAngle: 0,
-    sidesAngles: [],
-    turnover:    0,
-  };
+    this.state = {
+      animation:   false,
+      sidesCount:  0,
+      currentSide: 0,
+      prevSide:    0,
+      width:       0,
+      height:      0,
+      winHeight:   0,
+      perspective: 0,
+      sideOffset:  0,
+      figureAngle: 0,
+      sidesAngles: [],
+      turnover:    0,
+    };
+  }
 
   init() {
     this.sidesNodes      = [];
@@ -350,3 +334,23 @@ export default class AnimakitRotator extends AnimakitBase {
     );
   }
 }
+
+AnimakitRotator.propTypes = {
+  children:   React.PropTypes.any,
+  sheet:      React.PropTypes.any,
+  axis:       React.PropTypes.string,
+  side:       React.PropTypes.any,
+  duration:   React.PropTypes.number,
+  easing:     React.PropTypes.string,
+  shadow:     React.PropTypes.bool,
+  background: React.PropTypes.string,
+};
+
+AnimakitRotator.defaultProps = {
+  axis:       'X',
+  side:       0,
+  duration:   1000,
+  easing:     'cubic-bezier(.165,.84,.44,1)',
+  shadow:     false,
+  background: null,
+};
