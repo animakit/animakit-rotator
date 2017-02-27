@@ -29,7 +29,7 @@ npm install animakit-rotator
 | shadow | false | bool |  | `true`, `false` | Shadow on the rotator side. If you use 4 or less sides, it will be visible only while rotation |
 | background | false | string |  | Any color in hexadecimal format | Color of the rotator side, transparent by default |
 | duration | false | number | `1000` | Any integer number | Duration of rotation |
-| easing | false | string | `cubic-bezier(.165, .84, .44, 1)` | Any [easing function](http://easings.net/) | Easing function of rotation |
+| easing | false | string | `cubic-bezier (.165,.84,.44,1)` | Any [easing function](http://easings.net/) | Easing function of rotation |
 
 ## Limitations
 
