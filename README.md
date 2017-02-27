@@ -6,7 +6,7 @@ Supports up to 6 blocks, different sizes, and X/Y axis.
 ## Usage
 
 ```javascript
-<AnimakitRotator side = { this.state.loading }>
+<AnimakitRotator side={this.state.loading}>
   <Button />
   <Loader />
 </AnimakitRotator>
