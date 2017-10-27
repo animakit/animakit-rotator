@@ -1,15 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<AnimakitRotator /> should render 1`] = `
-<div
-  style={null}
->
-  <div
-    style={null}
-  >
-    <div
-      style={null}
-    />
+<div>
+  <div>
+    <div />
   </div>
 </div>
 `;
