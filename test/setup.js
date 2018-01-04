@@ -6,7 +6,6 @@ Enzyme.configure({ adapter: new Adapter() });
 
 const { JSDOM } = jsdom;
 
-// const doc = jsdom.jsdom('<!doctype html><html><body></body></html>');
 const { document: doc } = (new JSDOM('<!doctype html><html><body></body></html>')).window;
 
 const win = doc.defaultView;
