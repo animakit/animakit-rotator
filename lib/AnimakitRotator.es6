@@ -211,6 +211,8 @@ export default class AnimakitRotator extends Component {
   getShadowStyles(num) {
     const { currentSide, sidesCount, animation } = this.state;
 
+    if (!sidesCount) return {};
+
     const opacity = num === currentSide ? 0 : 2 / sidesCount;
 
     if (!animation) return { ...styles.sideShadow, opacity };
