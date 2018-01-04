@@ -11,7 +11,7 @@
     "clean": "rimraf lib/*.js",
     "build": "npm run clean && babel -s inline -d ./ **/*.es6",
     "prepublishOnly": "npm run build",
-    "test": "$(npm bin)/jest"
+    "test": "npm run build && jest"
   },
   "author": "Anna Selezniova",
   "license": "MIT",
@@ -28,6 +28,10 @@
     "url": "https://github.com/animakit/animakit-rotator"
   },
   "homepage": "https://animakit.github.io",
+  "peerDependencies": {
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-add-module-exports": "^0.2.1",
@@ -45,9 +49,7 @@
     "rimraf": "^2.6.2"
   },
   "dependencies": {
-    "lodash.isequal": "^4.5.0",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "lodash.isequal": "^4.5.0"
   },
   "jest": {
     "testEnvironment": "node",
