@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.1.2
+* Upgrade to React 16.0.0
+* Move React to peerDependencies
+
 ## 2.1.1
 * Upgrade to React 15.5.0
 
