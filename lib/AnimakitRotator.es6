@@ -29,6 +29,8 @@ export default class AnimakitRotator extends Component {
 
       turnover: 0,
     };
+
+    this.setFigureNode = this.setFigureNode.bind(this);
   }
 
   componentWillMount() {
@@ -434,13 +436,17 @@ export default class AnimakitRotator extends Component {
     );
   }
 
+  setFigureNode(c) {
+    this.figureNode = c;
+  }
+
   render() {
     const hasBackground = this.props.background !== null;
 
     return (
       <div style={ this.getSceneStyles() }>
         <div style={ this.getContainerStyles() }>
-          <div style={ this.getFigureStyles() } ref={ (c) => { this.figureNode = c; }}>
+          <div style={ this.getFigureStyles() } ref={ this.setFigureNode }>
             { React.Children.map(this.props.children, (child, num) => {
               if (num >= MAXCOUNT) return null;
 
