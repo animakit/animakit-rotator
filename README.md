@@ -1,5 +1,8 @@
 # AnimakitRotator
 
+**WARNING:** Currently unmaintained because of lack of interest, activity and resources
+
+
 React component for the 3D rotation of the blocks.
 Supports up to 6 blocks, different sizes, and X/Y axis.
 
